@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-verdana text-mcw-darkgray bg-white m-0;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-calibri;
+  }
+}
+
+@layer components {
+  .mcw-logo-text .mcw {
+    @apply font-calibri font-bold text-mcw-black;
+  }
+  .mcw-logo-text .e {
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: #FF0000;
+  }
+  .nav-link {
+    @apply text-mcw-gray font-verdana text-sm hover:text-mcw-black transition-colors duration-200 px-3 py-2;
+  }
+  .nav-link.active {
+    @apply text-mcw-red font-bold;
+  }
+  .section-heading {
+    @apply font-calibri text-3xl font-bold text-mcw-black mb-2;
+  }
+  .red-accent {
+    @apply text-mcw-red;
+  }
+  .card {
+    @apply bg-white border border-gray-200 rounded shadow-sm p-6;
+  }
+  .btn-primary {
+    @apply bg-mcw-red text-white font-verdana font-bold px-6 py-3 hover:bg-red-700 transition-colors duration-200 cursor-pointer;
+  }
+}
