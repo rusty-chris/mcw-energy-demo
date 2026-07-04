@@ -1,11 +1,14 @@
 // Glendoe Hydro Scheme operational data (Jan–Aug 2009)
 // Based on publicly available court records and technical literature.
-// Design head: 600–606m. Collapse August 2009 after 71m blockage in headrace tunnel.
-// Source: Glendoe Hydro Scheme Wikipedia; tunneltalk.com; Springer Rock Mechanics paper (2019)
+// Design head: 600–606m. Collapse detected 4 August 2009 after 71m blockage in headrace tunnel.
+// Sources: Glendoe Hydro Scheme Wikipedia; tunneltalk.com; Springer Rock Mechanics paper (2019);
+//          Renewable Energy World "Reopening Glendoe after a Rockfall"
 
 export const DESIGN_HEAD = 603; // midpoint of design range 600–606m
 export const WARNING_THRESHOLD = 595; // illustrative early-warning threshold
 
+// Monthly trend data — anchor points are from documented court records;
+// intermediate values are interpolated and illustrative.
 export const monthlyData = [
   { month: 'Jan 2009', netHead: 602, output: 98.2, headLossPct: 0.2, status: 'normal' },
   { month: 'Feb 2009', netHead: 601, output: 97.5, headLossPct: 0.3, status: 'normal' },
@@ -14,12 +17,15 @@ export const monthlyData = [
   { month: 'May 2009', netHead: 591, output: 93.0, headLossPct: 2.0, status: 'caution' },
   { month: 'Jun 2009', netHead: 584, output: 90.4, headLossPct: 3.2, status: 'warning' },
   { month: 'Jul 2009', netHead: 576, output: 87.2, headLossPct: 4.5, status: 'warning' },
-  { month: 'Aug 2009', netHead: 569, output: null, headLossPct: 14.0, status: 'collapse' },
+  { month: '4 Aug 2009', netHead: 569, output: null, headLossPct: 14.0, status: 'collapse' },
 ];
 
 // Key documented facts from court records:
 // - Late May / early June 2009: operator Sandilands "noticed" head reading of 584m (design 600–606m)
-// - August 2009: collapse caused ~14% head loss (38–39m below gross head of 608m)
+// - 29 June 2009: official opening by Queen Elizabeth II
+// - 30 June 2009: "unusual thumping noises" heard for ~2 hours — documented precursor signal
+// - 4 August 2009: sediment plume observed — collapse detected; scheme shut down and drained
+// - Collapse caused ~14% head loss (38–39m below gross head of 608m)
 // - Output reduced to ~90MW before collapse (design 100MW)
 // - No alarms were set for net head, needle valve opening, or head loss in 2009
 // - 1,700 sensors installed; only 179 actively monitored

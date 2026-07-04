@@ -7,6 +7,7 @@ export default function Navbar() {
   const links = [
     { to: '/', label: 'Home' },
     { to: '/tunnel-health', label: 'Tunnel Health' },
+    { to: '/bearing-health', label: 'Bearing Health' },
     { to: '/contact', label: 'Contact' },
   ];
 
@@ -14,10 +15,16 @@ export default function Navbar() {
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
-        <NavLink to="/" className="flex items-center gap-2">
-          <img src="/mcw-logo.png" alt="MCWe logo" className="h-8" />
-          <span className="font-verdana text-sm text-mcw-gray hidden sm:block">
-            McWilliams Energy
+        <NavLink to="/" className="flex flex-col leading-tight">
+          <span className="font-calibri font-bold text-xl text-mcw-black">
+            Hydro<span className="text-mcw-red">Pulse</span>
+          </span>
+          <span className="font-verdana text-[10px] text-mcw-gray tracking-wide">
+            by{' '}
+            <span className="mcw-logo-text">
+              <span className="mcw font-bold">MCW</span>
+              <span className="e">e</span>
+            </span>
           </span>
         </NavLink>
 
@@ -28,9 +35,7 @@ export default function Navbar() {
               <NavLink
                 to={to}
                 end={to === '/'}
-                className={({ isActive }) =>
-                  `nav-link${isActive ? ' active' : ''}`
-                }
+                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
               >
                 {label}
               </NavLink>
@@ -46,9 +51,19 @@ export default function Navbar() {
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {open ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             )}
           </svg>
         </button>
@@ -63,7 +78,9 @@ export default function Navbar() {
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `block py-2 text-sm font-verdana ${isActive ? 'text-mcw-red font-bold' : 'text-mcw-gray'}`
+                `block py-2 text-sm font-verdana ${
+                  isActive ? 'text-mcw-red font-bold' : 'text-mcw-gray'
+                }`
               }
               onClick={() => setOpen(false)}
             >

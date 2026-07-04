@@ -32,9 +32,9 @@ export default function Contact() {
     <main className="max-w-6xl mx-auto px-4 py-10">
       <div className="mb-8">
         <p className="font-verdana text-mcw-red uppercase tracking-widest text-xs mb-2">
-          Get in Touch
+          Request a Demo
         </p>
-        <h1 className="font-calibri text-4xl font-bold text-mcw-black">Contact McWilliams Energy</h1>
+        <h1 className="font-calibri text-4xl font-bold text-mcw-black">Contact HydroPulse</h1>
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
@@ -80,11 +80,12 @@ export default function Contact() {
           <h2 className="section-heading mb-6">Make an Enquiry</h2>
           <div className="card border-l-4 border-mcw-red">
             <p className="font-verdana text-sm text-mcw-gray leading-relaxed mb-4">
-              Mike McWilliams welcomes enquiries from developers, lenders, governments, and legal
-              teams working on hydropower and pumped storage projects worldwide.
+              Interested in piloting HydroPulse on your hydroelectric or pumped storage scheme?
+              Mike McWilliams and the MCWe team welcome enquiries from asset owners, operators,
+              developers, and lenders worldwide.
             </p>
             <p className="font-verdana text-sm text-mcw-gray leading-relaxed mb-6">
-              To discuss your project, please email{' '}
+              To request a demonstration or discuss your asset's data landscape, please email{' '}
               <a href="mailto:mike@mcw-e.com" className="text-mcw-red font-bold hover:underline">
                 mike@mcw-e.com
               </a>{' '}
@@ -94,8 +95,8 @@ export default function Contact() {
               </a>
               .
             </p>
-            <a href="mailto:mike@mcw-e.com?subject=Project%20Enquiry" className="btn-primary inline-block">
-              Send an Email
+            <a href="mailto:mike@mcw-e.com?subject=HydroPulse%20Demo%20Request" className="btn-primary inline-block">
+              Request a Demo
             </a>
           </div>
 

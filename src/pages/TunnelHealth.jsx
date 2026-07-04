@@ -53,8 +53,11 @@ export default function TunnelHealth() {
     <main className="max-w-6xl mx-auto px-4 py-10">
       {/* Page header */}
       <div className="mb-8">
-        <p className="font-verdana text-mcw-red uppercase tracking-widest text-xs mb-2">
-          Case Study · Glendoe Hydro Scheme, Scotland
+        <p className="font-verdana text-mcw-red uppercase tracking-widest text-xs mb-1">
+          Module 01 · Head Loss Monitoring
+        </p>
+        <p className="font-verdana text-xs text-mcw-gray mb-2">
+          Case Study: Glendoe Hydro Scheme, Scotland (2009)
         </p>
         <h1 className="font-calibri text-4xl font-bold text-mcw-black mb-3">
           Tunnel Health Methodology
@@ -67,9 +70,17 @@ export default function TunnelHealth() {
           that was never acted upon.
         </p>
         <p className="font-verdana text-mcw-gray text-sm max-w-3xl leading-relaxed mt-2">
-          This dashboard illustrates the methodology Mike McWilliams developed as expert witness
-          on the case: a systematic approach to monitoring net head loss that can identify
-          structural deterioration long before catastrophic failure occurs.
+          The scheme was officially opened by Queen Elizabeth II on <strong>29 June 2009</strong>.
+          The very next day — <strong>30 June</strong> — operators reported "unusual thumping
+          noises" lasting approximately two hours. Five weeks later, on <strong>4 August 2009</strong>,
+          a sediment plume was observed and the scheme was shut down. The collapse had blocked
+          71 m of tunnel in the Conagleann Fault Zone.
+        </p>
+        <p className="font-verdana text-mcw-gray text-sm max-w-3xl leading-relaxed mt-2">
+          This dashboard demonstrates Module 01 of HydroPulse: the Head Loss Monitoring
+          methodology developed by Mike McWilliams during his expert witness work on the Glendoe
+          proceedings — a systematic approach to monitoring net head loss that identifies structural
+          deterioration long before catastrophic failure occurs.
         </p>
       </div>
 
@@ -280,7 +291,7 @@ export default function TunnelHealth() {
           (584 m vs design 603 m) came in late May / early June 2009 — but went unacted upon.
           Applying a 2% head-loss alert threshold to the available data would have triggered
           an alarm in approximately{' '}
-          <strong>April 2009 — four months before collapse</strong>.
+          <strong>April 2009 — four months before the collapse was detected on 4 August 2009</strong>.
         </p>
         <p className="font-verdana text-sm mt-3 text-red-100">
           This methodology is now applicable to any hydropower or pumped storage scheme with

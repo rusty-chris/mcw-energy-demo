@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# ML — large generated artefacts (regenerate with ml/train_bearing_lstm.py)
+ml/*.keras
+ml/lstm_results.png
+
+# Claude Code session data (project settings in .claude/ ARE committed)
+.claude/projects/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

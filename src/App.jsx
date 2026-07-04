@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import TunnelHealth from './pages/TunnelHealth';
+import BearingHealth from './pages/BearingHealth';
 import Contact from './pages/Contact';
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/tunnel-health" element={<TunnelHealth />} />
+            <Route path="/bearing-health" element={<BearingHealth />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </div>
