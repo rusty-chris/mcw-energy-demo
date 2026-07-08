@@ -19,6 +19,9 @@ ml/lstm_results.png
 # Claude Code session data (project settings in .claude/ ARE committed)
 .claude/projects/
 
+# Domain knowledge — Mike's private email + expert-witness material. NEVER commit to a public repo.
+domain_knowledge/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

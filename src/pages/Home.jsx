@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 const modules = [
   {
     id: '01',
-    name: 'Head Loss Monitoring',
+    name: 'Tunnel Health Monitoring',
     description:
-      'Track net head decline as the primary early-warning indicator of tunnel structural deterioration. Based on the methodology from the £137M Glendoe case (SSE v Hochtief).',
+      'Detect a tunnel blockage from the relationship between needle-valve (or wicket-gate) opening and gross head — a signal far more sensitive than pressure monitoring. Based on the methodology from the £137M Glendoe case (SSE v Hochtief).',
     link: '/tunnel-health',
     active: true,
   },
@@ -168,9 +168,9 @@ export default function Home() {
           <div className="mt-6 bg-mcw-black text-white p-6 flex flex-col md:flex-row gap-6 items-center">
             <div className="flex gap-8 flex-wrap justify-center md:justify-start">
               {[
-                { value: '4', label: 'months of warning\ndata ignored' },
+                { value: '~20,000', label: 'alarms raised —\nnone caught it' },
                 { value: '1,700', label: 'sensors installed\nat Glendoe' },
-                { value: '179', label: 'actively\nmonitored' },
+                { value: '<0.2%', label: 'head change from a\n⅔ tunnel blockage' },
                 { value: '£137M', label: 'legal dispute\nthat followed' },
               ].map(({ value, label }) => (
                 <div key={value} className="text-center">
@@ -182,8 +182,8 @@ export default function Home() {
               ))}
             </div>
             <p className="font-verdana text-sm text-gray-300 md:ml-auto max-w-xs md:text-right">
-              The Glendoe collapse (2009) showed what happens when rich sensor data goes
-              unanalysed. HydroPulse exists to ensure it never happens again.
+              The Glendoe collapse (2009) was nearly invisible to the head gauge — but plain in the
+              valve-versus-head data operators already had. HydroPulse exists to read that signal.
             </p>
           </div>
         </div>
@@ -241,13 +241,15 @@ export default function Home() {
               Case Study · Glendoe Hydro Scheme, Scotland
             </p>
             <h2 className="font-calibri text-3xl font-bold mb-4">
-              Four months of warning — missed
+              Invisible to the gauge. Plain in the data.
             </h2>
             <p className="font-verdana text-gray-300 text-sm leading-relaxed mb-6 max-w-lg">
-              In 2009, the Glendoe headrace tunnel collapsed just eight months after commissioning.
-              A head-loss monitoring system would have triggered an alert in April 2009 — four
-              months before the £137M collapse was detected on 4 August. The operational data
-              existed. It just wasn't being watched.
+              In 2009, the Glendoe headrace tunnel collapsed within months of commissioning — and 71 m
+              of blocked tunnel changed the head by barely 1 m, too little for any alarm to catch. Yet
+              in the relationship between needle-valve opening and head, the same data show a clear
+              departure from early April, months before the £137M collapse was discovered on 4 August.
+              The operators could not have seen it with the tools of the day. The right analysis makes
+              it visible.
             </p>
             <Link to="/tunnel-health" className="btn-primary inline-block">
               View the Full Dashboard →
@@ -255,10 +257,10 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 gap-8 flex-shrink-0 text-center">
             {[
-              { value: '14%', label: 'head loss at collapse', highlight: true },
-              { value: '603m', label: 'design net head', highlight: false },
-              { value: '569m', label: 'net head at collapse', highlight: false },
-              { value: '~4 mo', label: 'advance warning available', highlight: true },
+              { value: '~4 mo', label: 'detectable before discovery', highlight: true },
+              { value: '7,400', label: 'readings analysed', highlight: false },
+              { value: '1 m', label: 'head lost from 71 m of collapse', highlight: false },
+              { value: '<0.2%', label: 'head change from a ⅔ blockage', highlight: true },
             ].map(({ value, label, highlight }) => (
               <div key={label}>
                 <p
@@ -311,8 +313,9 @@ export default function Home() {
               <p className="font-verdana text-mcw-gray text-xs leading-relaxed mb-4">
                 With 45 years in hydropower engineering across 60+ countries, Mike built HydroPulse
                 on methodologies developed during expert witness work on the £137M SSE v Hochtief
-                (Glendoe) case — demonstrating that the 2009 tunnel collapse was predictable months
-                in advance from operational data that was never acted upon.
+                (Glendoe) case — showing that the 2009 tunnel collapse was detectable months in
+                advance in operational data the operators already held, using a method that did not
+                exist at the time.
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {credentials.map(({ org, role }) => (
