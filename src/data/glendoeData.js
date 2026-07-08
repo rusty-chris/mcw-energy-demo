@@ -229,6 +229,34 @@ export const headInsensitivity = {
   note: '71 m of collapsed tunnel cost only about 1 m of head — well inside pressure-gauge error.',
 };
 
+// Headline efficacy stats — what the method was worth (shown as promo boxes up top).
+export const resultStats = [
+  {
+    value: '~4 months',
+    label: 'Earlier warning',
+    detail: 'The valve signal was clear by early April 2009 — the collapse was not discovered until 4 August.',
+    highlight: true,
+  },
+  {
+    value: '£137M',
+    label: 'Value at stake',
+    detail: 'Repair costs and lost generation contested in the SSE v Hochtief dispute.',
+    highlight: true,
+  },
+  {
+    value: '3 years',
+    label: 'Unit offline',
+    detail: 'Out of service August 2009 → August 2012 while the tunnel was rebuilt.',
+    highlight: false,
+  },
+  {
+    value: '0 of ~20,000',
+    label: 'Alarms that caught it',
+    detail: '1,700 sensors, ~20,000 alarms in the run-up — none flagged the tunnel collapse.',
+    highlight: false,
+  },
+];
+
 // The alarm-flood contrast: rich sensing, none of it able to catch this failure.
 export const alarmContrast = {
   sensors: '1,700',

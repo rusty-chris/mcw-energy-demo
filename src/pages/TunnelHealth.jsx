@@ -15,26 +15,30 @@ import {
   bandBoundaries,
   timeline,
   keyFacts,
+  resultStats,
   methodologySteps,
   headInsensitivity,
   alarmContrast,
 } from '../data/glendoeData';
 
-// Month/period colour ramp: a single-hue red ordinal scale, light (Dec, healthy baseline)
-// → dark (Jul, deep into the collapse). Order carries the story; position carries the signal.
-// Validated with the dataviz palette validator (--ordinal, light on white): monotone, light
-// end ≥ 2:1 on white.
-const PERIOD_COLOURS = [
-  '#e79b98', // Dec 2008
-  '#e08a86', // Jan 2009
-  '#d97773', // Feb 2009
-  '#d16460', // 1–15 Mar
-  '#c8524e', // 16–31 Mar
-  '#bd433f', // 1–15 Apr
-  '#af3733', // 16–30 Apr
-  '#9e2c29', // May
-  '#8a221f', // Jun
-  '#731a17', // Jul
+// Colour by how each reading sits against the band — a status encoding, not a time ramp, so the
+// viewer can see at a glance which date ranges have left the band without reading the tooltip.
+// Four categorical hues (blue → teal → orange → red), validated with the dataviz palette validator
+// (--mode light): passes lightness band, chroma floor, adjacent-pair CVD separation and 3:1 contrast.
+const PHASE_COLOUR = {
+  baseline: '#3b7dd8', // Dec–Feb: inside the band
+  within: '#3b7dd8', // 1–15 Mar: still inside the band
+  onset: '#1f9e89', // 16–31 Mar: drifting to the band edge
+  departure: '#e0712a', // April: stepped outside the band
+  severe: '#c0392b', // May–Jul: far outside
+};
+
+// Legend keyed to band status (colour = identity, date range = the thing identified).
+const PHASE_LEGEND = [
+  { colour: '#3b7dd8', label: 'Dec – mid-March · inside the band' },
+  { colour: '#1f9e89', label: 'Late March · drifting to the edge' },
+  { colour: '#e0712a', label: 'April · stepped outside' },
+  { colour: '#c0392b', label: 'May–July · far outside' },
 ];
 
 const BAND_FILL = '#9ca3af';
@@ -86,13 +90,26 @@ const ScatterTooltip = ({ active, payload }) => {
   );
 };
 
-// One tagged series per period: colour carries time, points carry the signal.
-const allSeries = valveHeadSeries.map((s, i) => ({
+// One tagged series per period; colour is assigned by band-status phase (see PHASE_COLOUR).
+const allSeries = valveHeadSeries.map((s) => ({
   period: s.period,
   phase: s.phase,
-  colour: PERIOD_COLOURS[i],
+  colour: PHASE_COLOUR[s.phase],
   data: s.points.map((pt) => ({ ...pt, period: s.period, phase: s.phase })),
 }));
+
+// Shared status legend (colour = band status; the date ranges are what each colour identifies).
+const PhaseLegend = () => (
+  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 pt-3 border-t border-gray-100">
+    <span className="font-verdana text-xs text-mcw-gray mr-1">Reading period:</span>
+    {PHASE_LEGEND.map((p) => (
+      <span key={p.label} className="inline-flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: p.colour }} />
+        <span className="font-verdana text-xs text-mcw-gray">{p.label}</span>
+      </span>
+    ))}
+  </div>
+);
 // The detail view zooms to the 80.5–84.5% window (Mike's charts T3–T7), where December through
 // April all live and the April departure is legible; the May–Jul blow-out is dropped from it.
 const detailSeries = allSeries.filter((s) => s.phase !== 'severe');
@@ -194,7 +211,25 @@ export default function TunnelHealth() {
         </p>
       </div>
 
-      {/* Key facts */}
+      {/* Headline efficacy stats — what the method was worth */}
+      <section className="mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {resultStats.map(({ value, label, detail, highlight }) => (
+            <div
+              key={label}
+              className={`card p-4 border-t-4 ${highlight ? 'border-mcw-red' : 'border-gray-300'}`}
+            >
+              <p className={`font-calibri text-2xl font-bold ${highlight ? 'text-mcw-red' : 'text-mcw-black'}`}>
+                {value}
+              </p>
+              <p className="font-verdana text-xs font-bold text-mcw-black mt-1">{label}</p>
+              <p className="font-verdana text-xs text-mcw-gray mt-0.5 leading-snug">{detail}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Scheme specs — secondary context */}
       <section className="mb-10">
         <h2 className="section-heading">Scheme Specifications</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -210,13 +245,18 @@ export default function TunnelHealth() {
       {/* Analogy callout */}
       <section className="mb-6">
         <div className="card border-l-4 border-mcw-red bg-mcw-lightgray">
+          <p className="font-verdana text-mcw-red uppercase tracking-widest text-xs mb-1">
+            First, an analogy
+          </p>
           <p className="font-calibri font-bold text-mcw-black mb-1">The accelerator, not the speedometer</p>
           <p className="font-verdana text-sm text-mcw-gray leading-relaxed max-w-3xl">
-            To hold 70 mph on a flat road, the accelerator sits in a predictable spot. If you have to
-            press it further to keep the same speed, something is dragging — even while the
-            speedometer still reads a steady 70. Here the <strong>needle valve is the accelerator</strong>,{' '}
-            <strong>100 MW is the speed</strong>, a <strong>tunnel blockage is the drag</strong>, and
-            the <strong>head gauge is the speedometer that barely notices</strong>.
+            Picture driving a car for a moment. To hold 70 mph on a flat road, the accelerator sits
+            in a predictable spot. If you have to press it further to keep the same speed, something
+            is dragging — even while the speedometer still reads a steady 70.{' '}
+            <strong>That is exactly what happens here:</strong> the{' '}
+            <strong>needle valve is the accelerator</strong>, <strong>100 MW is the speed</strong>, a{' '}
+            <strong>tunnel blockage is the drag</strong>, and the{' '}
+            <strong>head gauge is the speedometer that barely notices</strong>.
           </p>
         </div>
       </section>
@@ -230,7 +270,9 @@ export default function TunnelHealth() {
           Each point is a steady-state reading at full 100 MW output. Healthy readings fall inside
           the grey band. As the tunnel blocks, the valve must open further to hold 100 MW, so the
           points walk to the <strong>right</strong> of the band — while the head stays almost
-          unchanged. Colour runs from December (pale) through to July (deep red).
+          unchanged. Colour marks how each reading sits against the band: <strong>blue</strong>{' '}
+          inside it, <strong>teal</strong> drifting to its edge, <strong>orange</strong> stepped
+          out, <strong>red</strong> far outside.
         </p>
 
         {/* Overview: the full escalation, Dec 2008 → Jul 2009 */}
@@ -245,11 +287,12 @@ export default function TunnelHealth() {
             height={380}
           />
           <p className="font-verdana text-xs text-mcw-gray mt-2 max-w-3xl">
-            December to April sits packed in the healthy band on the left. From May the valve is
-            forced steadily further open — by July it is close to fully open (100%) to still hold
-            100 MW, while the head barely moves. Obvious in hindsight; by then the tunnel was already
-            badly blocked.
+            The blue baseline sits packed in the healthy band on the left. From May the valve is
+            forced steadily further open (red) — by July it is close to fully open (100%) to still
+            hold 100 MW, while the head barely moves. Obvious in hindsight; by then the tunnel was
+            already badly blocked.
           </p>
+          <PhaseLegend />
         </div>
 
         {/* Detail: the forensic onset, zoomed to the band window (Mike's charts T3–T7) */}
@@ -270,19 +313,7 @@ export default function TunnelHealth() {
             alarm to flag, but unmistakable against the band. This is the signal that was present
             months before the collapse was discovered.
           </p>
-          {/* Chronological legend (colour = time) */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 pt-3 border-t border-gray-100">
-            <span className="font-verdana text-xs text-mcw-gray mr-1">Reading period:</span>
-            {allSeries.map((s) => (
-              <span key={s.period} className="inline-flex items-center gap-1.5">
-                <span
-                  className="w-2.5 h-2.5 rounded-full inline-block"
-                  style={{ backgroundColor: s.colour }}
-                />
-                <span className="font-verdana text-xs text-mcw-gray">{s.period}</span>
-              </span>
-            ))}
-          </div>
+          <PhaseLegend />
         </div>
 
         <p className="font-verdana text-xs text-gray-400 mt-3 italic">
