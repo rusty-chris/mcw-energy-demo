@@ -10,22 +10,31 @@
 // two-thirds of the tunnel costs only ~1 m of a ~605 m head, under 0.2% — inside gauge error),
 // which is precisely why a head-based alarm cannot see this and the valve-vs-head view can.
 //
-// IMPORTANT: The scatter points below are ILLUSTRATIVE / RECONSTRUCTED to match the ranges and
-// drift pattern of Mike's published Appendix T charts (T1–T7): valve opening ~80–100%, gross
-// head ~603–609 m. They stand in for the real ~7,400 ten-minute readings pending release of the
-// primary operational data. The reconstruction is faithful to the documented timeline: baseline
-// months sit tightly inside the band, late March grazes the band edge (possible onset), and
-// April onward departs progressively to the right.
+// IMPORTANT: The scatter points below are ILLUSTRATIVE / RECONSTRUCTED to match the ACTUAL axis
+// geometry of Mike's published Appendix T charts (T1–T7). Those charts are decisive on scale:
+//   • T3–T7 (Dec–Feb band, and the half-monthly March & April plots) all use an x-axis of
+//     80.5–84.5% valve. So EVERY reading from December through April sits in that narrow window.
+//   • The dramatic march out to 90–100% valve happens only in May, June and July (chart T1,
+//     x-axis 80–100%).
+//   • Gross head axis is 603–609 m throughout; the normal band is steep (~1.8 m of head per 1%
+//     of valve), because a small change in valve corresponds to a large change in head.
+// The reconstruction therefore tells the two-act story Mike's charts tell: a tight Dec–Feb band,
+// a March cluster still inside it (late March grazing the upper edge = possible onset), an April
+// cluster that has clearly — but still subtly, at valve 82–84% — stepped OUT of the band (the
+// forensic signal SSE could not see), and then a May–July blow-out toward a fully-open valve.
+// These 78 points stand in for Mike's real ~7,400 ten-minute readings, pending their release.
 
 // --- The band of normal operation ------------------------------------------------------------
 // Head as a linear function of valve opening: head = slope * valve + intercept, tolerance ± metres.
-// (In control-terms this is a residual/tolerance band; that jargon stays out of the UI.)
+// Fitted to Mike's T3 "band of normal operation" (Dec 2008 – Feb 2009): head ≈ 609 m at valve
+// 80.5% down to ≈ 603 m at valve 83.8%. (In control-terms a residual/tolerance band; jargon stays
+// out of the UI.)
 export const BAND = {
-  slope: -0.3125,
-  intercept: 634.125,
-  tolerance: 0.6, // metres either side of the centre line
-  vMin: 80,
-  vMax: 100,
+  slope: -1.8,
+  intercept: 753.8,
+  tolerance: 0.6, // metres either side of the centre line (band ≈ 1.2 m tall, matching T3)
+  vMin: 80.5,
+  vMax: 83.8,
 };
 
 const bandHead = (v, offset = 0) => BAND.slope * v + BAND.intercept + offset;
@@ -44,88 +53,105 @@ export const bandBoundaries = {
 
 // --- Reconstructed steady-state readings, grouped by period (chronological) ------------------
 // phase: baseline | within | onset | departure | severe — drives the narrative, not an alarm.
+// Geometry is faithful to Appendix T: band centre head(v) = -1.8·v + 753.8, ±0.6 m.
+//   Dec/Jan/Feb fill the band (Feb high-head/low-valve end → Dec low-head/high-valve end).
+//   1–15 Mar sits inside the band; 16–31 Mar hugs its upper edge (possible onset); 1–15 Apr has
+//   clearly stepped above the band at valve 82–83% (clear departure); 16–30 Apr is further out;
+//   May–Jul blow out to the right toward a fully-open valve. A few baseline/March points sit off
+//   the band — these are the start-up/shutdown/output-change outliers Mike notes and filters out.
 export const valveHeadSeries = [
   {
     period: 'Dec 2008',
     phase: 'baseline',
     points: [
-      { valve: 85.9, head: 607.72 }, { valve: 85.3, head: 607.7 }, { valve: 85.3, head: 607.27 },
-      { valve: 83.4, head: 608.5 }, { valve: 85.4, head: 607.86 }, { valve: 83.3, head: 608.36 },
-      { valve: 84.4, head: 608.11 },
+      { valve: 82.4, head: 605.6 }, { valve: 82.7, head: 605.1 }, { valve: 83.0, head: 604.6 },
+      { valve: 83.2, head: 604.1 }, { valve: 82.9, head: 604.9 }, { valve: 83.4, head: 603.9 },
+      { valve: 82.6, head: 605.0 },
     ],
   },
   {
     period: 'Jan 2009',
     phase: 'baseline',
     points: [
-      { valve: 87.1, head: 606.46 }, { valve: 83.2, head: 607.96 }, { valve: 85.7, head: 607.02 },
-      { valve: 86.8, head: 607.17 }, { valve: 81.4, head: 608.48 }, { valve: 88.1, head: 606.39 },
-      { valve: 89.8, head: 606.53 }, { valve: 88.5, head: 606.91 },
+      { valve: 81.3, head: 607.4 }, { valve: 81.8, head: 606.5 }, { valve: 82.1, head: 606.0 },
+      { valve: 81.5, head: 607.0 }, { valve: 82.4, head: 605.6 }, { valve: 81.0, head: 607.8 },
+      { valve: 82.2, head: 605.7 }, { valve: 83.0, head: 604.5 },
+      { valve: 84.0, head: 604.4 }, // start-up/shutdown outlier (right of band)
     ],
   },
   {
     period: 'Feb 2009',
     phase: 'baseline',
     points: [
-      { valve: 90.7, head: 606.07 }, { valve: 83.1, head: 607.77 }, { valve: 84.4, head: 607.76 },
-      { valve: 84.9, head: 607.98 }, { valve: 86.8, head: 607.12 }, { valve: 88.9, head: 605.82 },
-      { valve: 87.3, head: 607.02 }, { valve: 88, head: 606.94 },
+      { valve: 80.6, head: 608.9 }, { valve: 81.0, head: 608.1 }, { valve: 81.3, head: 607.5 },
+      { valve: 80.8, head: 608.5 }, { valve: 81.6, head: 606.9 }, { valve: 81.1, head: 607.9 },
+      { valve: 80.7, head: 608.7 },
+      { valve: 82.5, head: 607.6 }, // outlier above band
     ],
   },
   {
     period: '1–15 Mar 2009',
     phase: 'within',
     points: [
-      { valve: 92, head: 605.11 }, { valve: 87.5, head: 606.66 }, { valve: 89.8, head: 606.46 },
-      { valve: 85.6, head: 607.3 }, { valve: 92.1, head: 605.32 }, { valve: 87.5, head: 607 },
+      { valve: 81.2, head: 607.4 }, { valve: 81.6, head: 606.8 }, { valve: 81.9, head: 606.4 },
+      { valve: 82.1, head: 606.1 }, { valve: 82.3, head: 605.7 }, { valve: 81.7, head: 606.7 },
+      { valve: 82.5, head: 605.4 },
+      { valve: 83.3, head: 605.9 }, { valve: 83.6, head: 606.2 }, // right-of-band outliers
     ],
   },
   {
     period: '16–31 Mar 2009',
     phase: 'onset',
     points: [
-      { valve: 90.3, head: 606.36 }, { valve: 94.6, head: 605.32 }, { valve: 89.1, head: 606.89 },
-      { valve: 92.8, head: 605.78 }, { valve: 89.5, head: 606.78 }, { valve: 93.7, head: 605.33 },
+      { valve: 81.2, head: 608.0 }, { valve: 81.5, head: 607.6 }, { valve: 81.8, head: 607.1 },
+      { valve: 82.0, head: 606.8 }, { valve: 82.3, head: 606.2 }, { valve: 81.6, head: 607.3 },
+      { valve: 82.5, head: 605.85 },
+      { valve: 83.0, head: 606.3 }, { valve: 83.4, head: 606.0 }, // right-of-band outliers
     ],
   },
   {
     period: '1–15 Apr 2009',
     phase: 'departure',
     points: [
-      { valve: 91.7, head: 606.71 }, { valve: 96.3, head: 605.05 }, { valve: 96.4, head: 605.37 },
-      { valve: 94, head: 606.12 }, { valve: 93.5, head: 606.03 }, { valve: 97.4, head: 604.98 },
+      { valve: 81.7, head: 608.0 }, { valve: 82.0, head: 607.6 }, { valve: 82.3, head: 607.2 },
+      { valve: 82.6, head: 606.9 }, { valve: 82.9, head: 606.6 }, { valve: 83.2, head: 606.3 },
+      { valve: 81.9, head: 607.8 },
+      { valve: 81.0, head: 605.4 }, // low shutdown outlier
     ],
   },
   {
     period: '16–30 Apr 2009',
     phase: 'departure',
     points: [
-      { valve: 97.6, head: 605.46 }, { valve: 95.5, head: 605.88 }, { valve: 99, head: 604.6 },
-      { valve: 99.4, head: 604.61 }, { valve: 94.8, head: 605.81 }, { valve: 99.1, head: 604.54 },
+      { valve: 82.9, head: 605.2 }, { valve: 83.2, head: 605.0 }, { valve: 83.5, head: 604.8 },
+      { valve: 83.8, head: 604.6 }, { valve: 84.1, head: 604.5 }, { valve: 84.4, head: 604.3 },
+      { valve: 83.0, head: 605.1 },
     ],
   },
   {
     period: 'May 2009',
     phase: 'severe',
     points: [
-      { valve: 98.7, head: 605.13 }, { valve: 95.2, head: 606.43 }, { valve: 100, head: 604.53 },
-      { valve: 95.9, head: 606.23 }, { valve: 100, head: 604.83 }, { valve: 98.7, head: 605.18 },
+      { valve: 84.5, head: 606.0 }, { valve: 86.0, head: 605.6 }, { valve: 88.0, head: 605.2 },
+      { valve: 90.0, head: 604.9 }, { valve: 91.5, head: 604.7 }, { valve: 93.0, head: 604.6 },
+      { valve: 94.5, head: 604.9 }, { valve: 92.0, head: 605.5 },
     ],
   },
   {
     period: 'Jun 2009',
     phase: 'severe',
     points: [
-      { valve: 97.9, head: 605.91 }, { valve: 96, head: 606.58 }, { valve: 96.2, head: 606.72 },
-      { valve: 100, head: 605.07 }, { valve: 96.3, head: 606.6 }, { valve: 97.4, head: 606.27 },
+      { valve: 88.0, head: 605.4 }, { valve: 89.0, head: 604.3 }, { valve: 90.0, head: 606.0 },
+      { valve: 91.0, head: 604.6 }, { valve: 91.5, head: 606.5 }, { valve: 92.0, head: 605.2 },
     ],
   },
   {
     period: 'Jul 2009',
     phase: 'severe',
     points: [
-      { valve: 100, head: 606 }, { valve: 98.6, head: 606.02 }, { valve: 100, head: 605.58 },
-      { valve: 100, head: 605.49 }, { valve: 100, head: 605.4 },
+      { valve: 92.5, head: 605.6 }, { valve: 94.5, head: 605.9 }, { valve: 96.0, head: 605.5 },
+      { valve: 97.5, head: 606.0 }, { valve: 98.5, head: 605.6 }, { valve: 99.5, head: 605.9 },
+      { valve: 100.0, head: 606.0 },
     ],
   },
 ];

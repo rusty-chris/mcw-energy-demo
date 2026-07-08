@@ -86,9 +86,59 @@ const ScatterTooltip = ({ active, payload }) => {
   );
 };
 
-// One flat point list per period, tagged so the tooltip can name it.
-const seriesData = valveHeadSeries.map((s) =>
-  s.points.map((pt) => ({ ...pt, period: s.period, phase: s.phase })),
+// One tagged series per period: colour carries time, points carry the signal.
+const allSeries = valveHeadSeries.map((s, i) => ({
+  period: s.period,
+  phase: s.phase,
+  colour: PERIOD_COLOURS[i],
+  data: s.points.map((pt) => ({ ...pt, period: s.period, phase: s.phase })),
+}));
+// The detail view zooms to the 80.5–84.5% window (Mike's charts T3–T7), where December through
+// April all live and the April departure is legible; the May–Jul blow-out is dropped from it.
+const detailSeries = allSeries.filter((s) => s.phase !== 'severe');
+
+// Shared scatter renderer, driven by an x-domain so the same component serves overview and detail.
+const ValveHeadChart = ({ series, xDomain, xTicks, height }) => (
+  <ResponsiveContainer width="100%" height={height}>
+    <ScatterChart margin={{ top: 10, right: 24, left: 8, bottom: 24 }}>
+      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+      <XAxis
+        type="number"
+        dataKey="valve"
+        domain={xDomain}
+        ticks={xTicks}
+        allowDataOverflow
+        tick={{ fontFamily: 'Verdana', fontSize: 11 }}
+        label={{
+          value: 'Needle Valve Opening (%)',
+          position: 'insideBottom',
+          offset: -12,
+          style: { fontFamily: 'Verdana', fontSize: 11, fill: '#666666' },
+        }}
+      />
+      <YAxis
+        type="number"
+        dataKey="head"
+        domain={[603, 609]}
+        ticks={[603, 605, 607, 609]}
+        allowDataOverflow
+        tick={{ fontFamily: 'Verdana', fontSize: 11 }}
+        label={{
+          value: 'Gross Head (m)',
+          angle: -90,
+          position: 'insideLeft',
+          offset: 16,
+          style: { fontFamily: 'Verdana', fontSize: 11, fill: '#666666' },
+        }}
+      />
+      <ZAxis range={[70, 70]} />
+      <NormalBand />
+      <Tooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: '3 3' }} />
+      {series.map((s) => (
+        <Scatter key={s.period} name={s.period} data={s.data} fill={s.colour} fillOpacity={0.9} />
+      ))}
+    </ScatterChart>
+  </ResponsiveContainer>
 );
 
 const markerColour = {
@@ -182,72 +232,67 @@ export default function TunnelHealth() {
           points walk to the <strong>right</strong> of the band — while the head stays almost
           unchanged. Colour runs from December (pale) through to July (deep red).
         </p>
+
+        {/* Overview: the full escalation, Dec 2008 → Jul 2009 */}
         <div className="card p-4">
-          <ResponsiveContainer width="100%" height={420}>
-            <ScatterChart margin={{ top: 10, right: 24, left: 8, bottom: 24 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis
-                type="number"
-                dataKey="valve"
-                domain={[80, 101]}
-                ticks={[80, 85, 90, 95, 100]}
-                tick={{ fontFamily: 'Verdana', fontSize: 11 }}
-                label={{
-                  value: 'Needle Valve Opening (%)',
-                  position: 'insideBottom',
-                  offset: -12,
-                  style: { fontFamily: 'Verdana', fontSize: 11, fill: '#666666' },
-                }}
-              />
-              <YAxis
-                type="number"
-                dataKey="head"
-                domain={[602, 610]}
-                ticks={[602, 604, 606, 608, 610]}
-                tick={{ fontFamily: 'Verdana', fontSize: 11 }}
-                label={{
-                  value: 'Gross Head (m)',
-                  angle: -90,
-                  position: 'insideLeft',
-                  offset: 16,
-                  style: { fontFamily: 'Verdana', fontSize: 11, fill: '#666666' },
-                }}
-              />
-              <ZAxis range={[70, 70]} />
-              <NormalBand />
-              <Tooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: '3 3' }} />
-              {seriesData.map((data, i) => (
-                <Scatter
-                  key={valveHeadSeries[i].period}
-                  name={valveHeadSeries[i].period}
-                  data={data}
-                  fill={PERIOD_COLOURS[i]}
-                  fillOpacity={0.9}
-                />
-              ))}
-            </ScatterChart>
-          </ResponsiveContainer>
+          <p className="font-verdana text-xs font-bold text-mcw-black mb-2">
+            The full picture — December 2008 to July 2009
+          </p>
+          <ValveHeadChart
+            series={allSeries}
+            xDomain={[80, 101]}
+            xTicks={[80, 85, 90, 95, 100]}
+            height={380}
+          />
+          <p className="font-verdana text-xs text-mcw-gray mt-2 max-w-3xl">
+            December to April sits packed in the healthy band on the left. From May the valve is
+            forced steadily further open — by July it is close to fully open (100%) to still hold
+            100 MW, while the head barely moves. Obvious in hindsight; by then the tunnel was already
+            badly blocked.
+          </p>
+        </div>
+
+        {/* Detail: the forensic onset, zoomed to the band window (Mike's charts T3–T7) */}
+        <div className="card p-4 mt-4">
+          <p className="font-verdana text-xs font-bold text-mcw-black mb-2">
+            The early signal — zoomed to the band, December to April
+          </p>
+          <ValveHeadChart
+            series={detailSeries}
+            xDomain={[80.5, 84.5]}
+            xTicks={[80.5, 81.5, 82.5, 83.5, 84.5]}
+            height={360}
+          />
+          <p className="font-verdana text-xs text-mcw-gray mt-2 max-w-3xl">
+            The same readings, magnified to the band. December through mid-March sit inside it;
+            late March drifts up to its edge; by <strong>early April the cluster has clearly stepped
+            out</strong> — at a valve opening of just 82–83%, a shift far too small for any gauge or
+            alarm to flag, but unmistakable against the band. This is the signal that was present
+            months before the collapse was discovered.
+          </p>
           {/* Chronological legend (colour = time) */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 pt-3 border-t border-gray-100">
             <span className="font-verdana text-xs text-mcw-gray mr-1">Reading period:</span>
-            {valveHeadSeries.map((s, i) => (
+            {allSeries.map((s) => (
               <span key={s.period} className="inline-flex items-center gap-1.5">
                 <span
                   className="w-2.5 h-2.5 rounded-full inline-block"
-                  style={{ backgroundColor: PERIOD_COLOURS[i] }}
+                  style={{ backgroundColor: s.colour }}
                 />
                 <span className="font-verdana text-xs text-mcw-gray">{s.period}</span>
               </span>
             ))}
           </div>
-          <p className="font-verdana text-xs text-gray-400 mt-3 italic">
-            Points are illustrative, reconstructed to match the ranges and drift pattern of Mike
-            McWilliams' published Appendix T charts (needle valve opening ~80–100%, gross head
-            ~603–609 m). They stand in for the roughly 7,400 ten-minute readings in the full record.
-            A handful of readings inside the baseline months reflect start-up, shutdown and
-            output-change events rather than tunnel condition.
-          </p>
         </div>
+
+        <p className="font-verdana text-xs text-gray-400 mt-3 italic">
+          Points are illustrative, reconstructed to match the axis geometry of Mike McWilliams'
+          published Appendix T charts: the December–April readings occupy the 80.5–84.5% band window
+          (his charts T3–T7), and the May–July blow-out reaches ~100% (chart T1); gross head 603–609 m
+          throughout. They stand in for the roughly 7,400 ten-minute readings in the full record. A
+          handful of baseline readings sit off the band — the start-up, shutdown and output-change
+          events that are filtered out before analysis.
+        </p>
       </section>
 
       {/* Honest timeline */}
